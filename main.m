@@ -48,7 +48,7 @@ while 1
     L = bwlabel(imgn);
     mx=max(max(L));
     
-    % (3)
+    % (3). apply sobel
     BW = edge(double(imgn),'sobel');
     figure,imshow(BW);
     [imx,imy]=size(BW);
@@ -65,6 +65,7 @@ while 1
         %*-*-*-*-*-END Calculating connected components*-*-*-*-*
         n1=~n1;
         n1=~clip(n1);
+        % resize clip
         img_r=same_dim(n1);%Transf. to size 42 X 24
         %*-*Uncomment line below to see letters one by one*-*-*-*
         figure,imshow(img_r);pause(1)
