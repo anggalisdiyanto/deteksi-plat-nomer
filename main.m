@@ -8,12 +8,18 @@ clear;
 % open file dialog
 [baseFileName, folder] = uigetfile('*.jpg','Pilih file image');
 fullImageFileName = fullfile(folder,baseFileName);
-img = imread(baseFileName);
-figure,imshow(img);
+img = imread(fullImageFileName);
+figure,imshow(img);title('base image'); %fig.1
 
 %(2.a) convert to grayscale
 img = rgb2gray(img);
-figure,imshow(img);
+figure,imshow(img);title('grayscale'); %fig.2
+
+% make negative effect
+img = imcomplement(img);
+figure,imshow(img);title('invert color');
+
+
 level = graythresh(img);
 imagen = im2bw(img,level);
 imagen = ~imagen;
@@ -50,6 +56,7 @@ while 1
     
     % (3). apply sobel
     BW = edge(double(imgn),'sobel');
+    % BW = imgn;
     figure,imshow(BW);
     [imx,imy]=size(BW);
     for n=1:mx
@@ -68,7 +75,7 @@ while 1
         % resize clip
         img_r=same_dim(n1);%Transf. to size 42 X 24
         %*-*Uncomment line below to see letters one by one*-*-*-*
-        figure,imshow(img_r);pause(1)
+        % figure,imshow(img_r);pause(1)
         %*-*-*-*-*-*-*-*
         letter=read_letter(img_r);%img to text
         word=[word letter];
