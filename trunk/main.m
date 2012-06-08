@@ -1,3 +1,18 @@
+% 1.input image 
+% 2.preparing 
+%   2.a convert to grayscale 
+%   2.b invert color (because i only have black on white templates)
+%   2.c detect and cropping license plat number
+%       * horizontal edge processing
+%       * vertical edge processing
+%       * segmentation
+%       * region of interest extraction
+%       * output image
+%   2.d convert to binary
+%   2.e Remove all object containing fewer than 70 pixels
+%   2.f apply imrode
+%   2.g Perform 2-D median filtering
+
 warning off
 
 % just clearing all stufft
@@ -5,40 +20,40 @@ clc;
 close all;
 clear;
 
-% open file dialog
+% (1).open file dialog
 [baseFileName, folder] = uigetfile('*.jpg','Pilih file image');
 fullImageFileName = fullfile(folder,baseFileName);
 img = imread(fullImageFileName);
 figure,imshow(img);title('base image'); %fig.1
 
-%(2.a) convert to grayscale
+%% --------------> PREPARING IMAGE
+
+%(2.a).convert to grayscale
 img = rgb2gray(img);
 figure,imshow(img);title('grayscale'); %fig.2
 
-% make negative effect
+% (2.b).invert color
 img = imcomplement(img);
 
-% figure,imshow(img);title('invert color');
-
-%% car license plate detection
+%% (2.c).car license plate detection
 img = detectplatnumber(img);
 
-%%
+% (2.d).grayscale to binary
 level = graythresh(img);
 imagen = im2bw(img,level);
 imagen = ~imagen;
 
-% Remove all object containing fewer than 70 pixels
+% (2.e) Remove all object containing fewer than 70 pixels
 imagen = bwareaopen(imagen,70);
 imagen = ~imagen;
 figure,imshow(imagen);title('Remove all object containing fewer than 70 pixels');
 
-% apply dilate
+% (2.f) apply imrode
 SE = strel('line',2,90);
 imagen = imerode(imagen,SE);
 figure,imshow(imagen);title('apply imdilate');
 
-%(2.b) clean from noise
+%(2.g) clean from noise
 if length(size(imagen))==3 %RGB image
     imagen=rgb2gray(imagen);
     figure,imshow(imagen);title('remove noise');
@@ -51,8 +66,7 @@ imagen (1,c)=255;
 imagen (f,c)=255;
 figure,imshow(imagen);title('remove noise');
 % END Filter Image Noise
-
-
+%%----------------> END PREPARING IMAGE
 
 word=[];%Storage matrix word from image
 re=imagen;
@@ -90,6 +104,7 @@ while 1
         %*-*Uncomment line below to see letters one by one*-*-*-*
         % figure,imshow(img_r);pause(1)
         %*-*-*-*-*-*-*-*
+		% read letter
         letter=read_letter(img_r);%img to text
         word=[word letter];
     end
