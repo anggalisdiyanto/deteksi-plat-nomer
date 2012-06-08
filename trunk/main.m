@@ -17,11 +17,11 @@ figure,imshow(img);title('grayscale'); %fig.2
 
 % make negative effect
 img = imcomplement(img);
+
 % figure,imshow(img);title('invert color');
 
 %% car license plate detection
 img = detectplatnumber(img);
-
 
 %%
 level = graythresh(img);
@@ -39,10 +39,10 @@ if length(size(imagen))==3 %RGB image
 end
 imagen = medfilt2(imagen);
 [f c]=size(imagen);
-imagen (1,1)=0;
-imagen (f,1)=0;
-imagen (1,c)=0;
-imagen (f,c)=0;
+imagen (1,1)=255;
+imagen (f,1)=255;
+imagen (1,c)=255;
+imagen (f,c)=255;
 % END Filter Image Noise
 
   
