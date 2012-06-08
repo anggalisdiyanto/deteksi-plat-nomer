@@ -17,9 +17,13 @@ figure,imshow(img);title('grayscale'); %fig.2
 
 % make negative effect
 img = imcomplement(img);
-figure,imshow(img);title('invert color');
+% figure,imshow(img);title('invert color');
+
+%% car license plate detection
+img = detectplatnumber(img);
 
 
+%%
 level = graythresh(img);
 imagen = im2bw(img,level);
 imagen = ~imagen;
@@ -31,16 +35,17 @@ imagen = ~imagen;
 %(2.b) clean from noise
 if length(size(imagen))==3 %RGB image
     imagen=rgb2gray(imagen);
-    figure,imshow(imagen);
+    figure,imshow(imagen);title('remove noise');
 end
 imagen = medfilt2(imagen);
 [f c]=size(imagen);
-imagen (1,1)=255;
-imagen (f,1)=255;
-imagen (1,c)=255;
-imagen (f,c)=255;
+imagen (1,1)=0;
+imagen (f,1)=0;
+imagen (1,c)=0;
+imagen (f,c)=0;
 % END Filter Image Noise
 
+  
 word=[];%Storage matrix word from image
 re=imagen;
 fid = fopen('log.txt', 'at');%Opens a text for append in order to store the number plates for log.
@@ -56,8 +61,8 @@ while 1
     
     % (3). apply sobel
     BW = edge(double(imgn),'sobel');
-    % BW = imgn;
-    figure,imshow(BW);
+    figure,imshow(BW);title('apply sobel');
+    
     [imx,imy]=size(BW);
     for n=1:mx
         [r,c] = find(L==n);
