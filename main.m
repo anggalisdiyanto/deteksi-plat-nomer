@@ -31,6 +31,12 @@ imagen = ~imagen;
 % Remove all object containing fewer than 70 pixels
 imagen = bwareaopen(imagen,70);
 imagen = ~imagen;
+figure,imshow(imagen);title('Remove all object containing fewer than 70 pixels');
+
+% apply dilate
+SE = strel('line',2,90);
+imagen = imerode(imagen,SE);
+figure,imshow(imagen);title('apply imdilate');
 
 %(2.b) clean from noise
 if length(size(imagen))==3 %RGB image
@@ -43,9 +49,11 @@ imagen (1,1)=255;
 imagen (f,1)=255;
 imagen (1,c)=255;
 imagen (f,c)=255;
+figure,imshow(imagen);title('remove noise');
 % END Filter Image Noise
 
-  
+
+
 word=[];%Storage matrix word from image
 re=imagen;
 fid = fopen('log.txt', 'at');%Opens a text for append in order to store the number plates for log.
