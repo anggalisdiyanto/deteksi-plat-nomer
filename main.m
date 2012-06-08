@@ -99,10 +99,14 @@ while 1
         %*-*-*-*-*-END Calculating connected components*-*-*-*-*
         n1=~n1;
         n1=~clip(n1);
+        
+        SE = strel('line',3,90);
+        n1 = imdilate(n1,SE);
+        
         % resize clip
         img_r=same_dim(n1);%Transf. to size 42 X 24
         %*-*Uncomment line below to see letters one by one*-*-*-*
-        % figure,imshow(img_r);pause(1)
+        figure,imshow(img_r);pause(1)
         %*-*-*-*-*-*-*-*
 		% read letter
         letter=read_letter(img_r);%img to text
