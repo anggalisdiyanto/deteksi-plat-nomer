@@ -29,18 +29,22 @@ figure,imshow(img);title('base image'); %fig.1
 %% --------------> PREPARING IMAGE
 
 %(2.a).convert to grayscale
-img = rgb2gray(img);
+if size(img,3)==3
+	img = rgb2gray(img); %RGB image
+end
+
 figure,imshow(img);title('grayscale'); %fig.2
 
 % (2.b).invert color
 img = imcomplement(img);
+figure,imshow(img);title('invert color'); 
 
 %% (2.c).car license plate detection
 img = detectplatnumber(img);
 
 % (2.d).grayscale to binary
-level = graythresh(img);
-imagen = im2bw(img,level);
+threshold = graythresh(img);
+imagen = im2bw(img,threshold);
 imagen = ~imagen;
 
 % (2.e) Remove all object containing fewer than 70 pixels
@@ -53,11 +57,12 @@ SE = strel('line',2,90);
 imagen = imerode(imagen,SE);
 figure,imshow(imagen);title('apply imdilate');
 
+%if length(size(imagen))==3 %RGB image
+%    imagen=rgb2gray(imagen);
+%    figure,imshow(imagen);title('remove noise');
+%end
+
 %(2.g) clean from noise
-if length(size(imagen))==3 %RGB image
-    imagen=rgb2gray(imagen);
-    figure,imshow(imagen);title('remove noise');
-end
 imagen = medfilt2(imagen);
 [f c]=size(imagen);
 imagen (1,1)=255;
