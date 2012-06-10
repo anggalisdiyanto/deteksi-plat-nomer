@@ -38,24 +38,18 @@ img = detectplatnumber(img);
 
 % grayscale to binary
 threshold = graythresh(img);
-imagen = im2bw(img,threshold);
+img = im2bw(img,threshold);
 
 % apply imrode
 SE = strel('line',2,90);
-imagen = imerode(imagen,SE);
-figure,imshow(imagen);title('apply imerode');
-
-imagen = ~imagen;
-
-% Remove all object containing fewer than 50 pixels
-imagen = bwareaopen(imagen,50);
-imagen = imcomplement(imagen);
-figure,imshow(imagen);title('Remove all object containing fewer than 50 pixels');
+img = imerode(img,SE);
+figure,imshow(img);title('apply imerode');
+    
 
 %% ----------------> END PREPARING IMAGE
 
 word=[];%Storage matrix word from image
-re=imagen;
+re=img;
 fid = fopen('log.txt', 'at');%Opens a text for append in order to store the number plates for log.
 while 1
     [fl re]=lines(re);%Fcn 'lines' separate lines in text
@@ -63,11 +57,16 @@ while 1
     %*-*Uncomment line below to see lines one by one*-*-*-*
     % figure,imshow(fl);pause(1)
     %*-*--*-*-*-*-*-*-
-    %*-*-*-*-*-Calculating connected components*-*-*-*-*-
+
+    % Remove all object containing fewer than 70 pixels
+    imgn = bwareaopen(imgn,70);
+    figure,imshow(img);title('Remove all object containing fewer than 70 pixels');
+    
+    %*-*-*-*-*-Calculating connected components*-*-*-*-*-    
     L = bwlabel(imgn);
     mx=max(max(L));
     
-    % (3). apply sobel
+    % apply sobel
     BW = edge(double(imgn),'sobel');
     figure,imshow(BW);title('apply sobel');
     
@@ -84,15 +83,12 @@ while 1
         end
         %*-*-*-*-*-END Calculating connected components*-*-*-*-*
         n1=~n1;
-        n1=~clip(n1);
-        
-        SE = strel('line',3,90);
-        n1 = imdilate(n1,SE);
-        
+        n1=~clip(n1);        
+       
         % resize clip
         img_r=same_dim(n1);%Transf. to size 42 X 24
         %*-*Uncomment line below to see letters one by one*-*-*-*
-        % figure,imshow(img_r);pause(1)
+        figure,imshow(img_r);pause(1)
         %*-*-*-*-*-*-*-*
 		% read letter
         letter=read_letter(img_r);%img to text
