@@ -28,6 +28,23 @@ img (1,c)=255;
 img (f,c)=255;
 figure,imshow(img);title('remove noise');
 
+%[R C] = size(img);
+%for i = 1:R
+%    for j = 1:C
+%        if img(i,j) <= (255 / 2)
+%            img(i,j) = 0;
+%        else
+%            img(i,j) = img(i,j);
+%        end
+%    end
+%end
+
+%clean again
+img = medfilt2(img);
+figure,imshow(img);title('filtering + median filter');
+
+
+
 % invert color
 img = imcomplement(img);
 figure,imshow(img);title('invert color'); 
