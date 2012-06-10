@@ -1,13 +1,18 @@
+function Y = main(x)
 warning off
 
-% just clearing all stufft
-clc;
-close all;
-clear;
+if isempty(x)
+    x = 'N';
+end
 
-% open file dialog
-[baseFileName, folder] = uigetfile('*.jpg','Pilih file image');
-fullImageFileName = fullfile(folder,baseFileName);
+if strcmp(x,'N') == 1
+    % open file dialog
+    [baseFileName, folder] = uigetfile('*.jpg','Pilih file image');
+    fullImageFileName = fullfile(folder,baseFileName);
+else
+    fullImageFileName = x;
+end
+
 img = imread(fullImageFileName);
 figure,imshow(img);title('base image'); %fig.1
 
@@ -40,10 +45,8 @@ figure,imshow(img);title('remove noise');
 %end
 
 %clean again
-img = medfilt2(img);
-figure,imshow(img);title('filtering + median filter');
-
-
+%img = medfilt2(img);
+%figure,imshow(img);title('filtering + median filter');
 
 % invert color
 img = imcomplement(img);
@@ -53,15 +56,16 @@ figure,imshow(img);title('invert color');
 img = detectplatnumber(img);
 %% END
 
+
 % grayscale to binary
 threshold = graythresh(img);
 img = im2bw(img,threshold);
 
 % apply imrode (http://www.mathworks.com/help/toolbox/images/ref/imerode.html)
-SE = strel('line',2,90);
+SE = strel('line',2,45);
 img = imerode(img,SE);
 figure,imshow(img);title('apply imerode');
-    
+ 
 
 %% ----------------> END PREPARING IMAGE
 
@@ -78,10 +82,10 @@ while 1
 
     % Remove all object containing fewer than 70 pixels
     imgn = bwareaopen(imgn,70);
-    figure,imshow(img);title('Remove all object containing fewer than 70 pixels');
+    figure,imshow(imgn);title('Remove all object containing fewer than 70 pixels');
     
     %*-*-*-*-*-Calculating connected components*-*-*-*-*-    
-    L = bwlabel(imgn);
+    L = bwlabel(imgn,4);
     mx=max(max(L));
     
     % apply sobel
@@ -115,7 +119,8 @@ while 1
     %fprintf(fid,'%s\n',lower(word));%Write 'word' in text file (lower)
     fprintf(fid,'Number Plate:-%s\nDate:-%s\n',word,date);%Write 'word' in text file (upper)
     fprintf(fid,'------------------------------------\n');
-    msgbox(sprintf('Number Plate Extraction successful.\nExtracted Number plate:- %s .\nSee the log.txt file to see the stored number.',word),'Extraction Success');
+    fprintf(sprintf('Number Plate Extraction successful.\nExtracted Number plate:- %s .\nSee the log.txt file to see the stored number.',word),'Extraction Success');
+    pause(1);
     word=[];%Clear 'word' variable
     %*-*-*When the sentences finish, breaks the loop*-*-*-*
     if isempty(re)  %See variable 're' in Fcn 'lines'
@@ -124,3 +129,4 @@ while 1
     %*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 end
 fclose(fid);
+end
