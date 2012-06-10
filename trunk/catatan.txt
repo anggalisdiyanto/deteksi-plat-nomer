@@ -1,0 +1,3 @@
+june
+10 - algoritma berhasil mendeteksi letak plat nomor dari image yang diambil dari internet
+   - kesalahan pengenalan angka dan huruf terjadi akibat resolusi dan noise image
