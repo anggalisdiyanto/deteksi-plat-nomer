@@ -40,7 +40,7 @@ img = detectplatnumber(img);
 threshold = graythresh(img);
 img = im2bw(img,threshold);
 
-% apply imrode
+% apply imrode (http://www.mathworks.com/help/toolbox/images/ref/imerode.html)
 SE = strel('line',2,90);
 img = imerode(img,SE);
 figure,imshow(img);title('apply imerode');
@@ -48,7 +48,8 @@ figure,imshow(img);title('apply imerode');
 
 %% ----------------> END PREPARING IMAGE
 
-word=[];%Storage matrix word from image
+%% OCR (Ing.Diego Barragán Guerrero - www.matpic.com)
+word=[];%Storage matrix word from image 
 re=img;
 fid = fopen('log.txt', 'at');%Opens a text for append in order to store the number plates for log.
 while 1
