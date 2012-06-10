@@ -1,3 +1,18 @@
+% 1.input image 
+% 2.preparing 
+%   2.a convert to grayscale 
+%   2.b invert color (because i only have black on white templates)
+%   2.c detect and cropping license plat number
+%       * horizontal edge processing
+%       * vertical edge processing
+%       * segmentation
+%       * region of interest extraction
+%       * output image
+%   2.d convert to binary
+%   2.e Remove all object containing fewer than 70 pixels
+%   2.f apply imrode
+%   2.g Perform 2-D median filtering
+
 warning off
 
 % just clearing all stufft
@@ -5,51 +20,65 @@ clc;
 close all;
 clear;
 
-% open file dialog
+% (1).open file dialog
 [baseFileName, folder] = uigetfile('*.jpg','Pilih file image');
 fullImageFileName = fullfile(folder,baseFileName);
 img = imread(fullImageFileName);
 figure,imshow(img);title('base image'); %fig.1
 
-%(2.a) convert to grayscale
-img = rgb2gray(img);
+%% --------------> PREPARING IMAGE
+
+%(2.a).convert to grayscale
+if size(img,3)==3
+	img = rgb2gray(img); %RGB image
+end
 figure,imshow(img);title('grayscale'); %fig.2
 
-% make negative effect
+%(2.b) clean from noise
+img = medfilt2(img);
+[f c]=size(img);
+img (1,1)=255;
+img (f,1)=255;
+img (1,c)=255;
+img (f,c)=255;
+
+% (2.b).invert color
 img = imcomplement(img);
+figure,imshow(img);title('invert color'); 
 
-% figure,imshow(img);title('invert color');
-
-%% car license plate detection
+%% (2.c).car license plate detection
 img = detectplatnumber(img);
 
-%%
-level = graythresh(img);
-imagen = im2bw(img,level);
+
+
+
+
+% (2.d).grayscale to binary
+threshold = graythresh(img);
+imagen = im2bw(img,threshold);
 imagen = ~imagen;
 
-% Remove all object containing fewer than 70 pixels
+% (2.e) Remove all object containing fewer than 70 pixels
 imagen = bwareaopen(imagen,70);
-imagen = ~imagen;
+%imagen = ~imagen;
+imagen = imcomplement(imagen);
+figure,imshow(imagen);title('Remove all object containing fewer than 70 pixels');
+
+% (2.f) apply imrode
+SE = strel('line',2,90);
+%imagen = imdilate(imagen,SE);
+%figure,imshow(imagen);title('apply imdilate');
+
+imagen = imerode(imagen,SE);
+figure,imshow(imagen);title('apply imerode');
+
+%if length(size(imagen))==3 %RGB image
+%    imagen=rgb2gray(imagen);
+%    figure,imshow(imagen);title('remove noise');
+%end
 
 
-%(2.b) clean from noise
-if length(size(imagen))==3 %RGB image
-    imagen=rgb2gray(imagen);
-    figure,imshow(imagen);title('remove noise');
-end
-imagen = medfilt2(imagen);
-[f c]=size(imagen);
-imagen (1,1)=255;
-imagen (f,1)=255;
-imagen (1,c)=255;
-imagen (f,c)=255;
-% END Filter Image Noise
-
-% apply dilate
-SE = strel('line',9,90);
-imagen = imdilate(imagen,SE);
-figure,imshow(imagen);title('apply imdilate');
+%%----------------> END PREPARING IMAGE
 
 word=[];%Storage matrix word from image
 re=imagen;
@@ -82,11 +111,16 @@ while 1
         %*-*-*-*-*-END Calculating connected components*-*-*-*-*
         n1=~n1;
         n1=~clip(n1);
+        
+        SE = strel('line',3,90);
+        n1 = imdilate(n1,SE);
+        
         % resize clip
         img_r=same_dim(n1);%Transf. to size 42 X 24
         %*-*Uncomment line below to see letters one by one*-*-*-*
-        % figure,imshow(img_r);pause(1)
+        figure,imshow(img_r);pause(1)
         %*-*-*-*-*-*-*-*
+		% read letter
         letter=read_letter(img_r);%img to text
         word=[word letter];
     end
