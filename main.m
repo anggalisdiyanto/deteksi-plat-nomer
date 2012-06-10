@@ -32,45 +32,42 @@ figure,imshow(img);title('base image'); %fig.1
 if size(img,3)==3
 	img = rgb2gray(img); %RGB image
 end
-
 figure,imshow(img);title('grayscale'); %fig.2
 
-% (2.b).invert color
+%(2.b) clean from noise
+img = medfilt2(img);
+[f c]=size(img);
+img (1,1)=255;
+img (f,1)=255;
+img (1,c)=255;
+img (f,c)=255;
+figure,imshow(img);title('remove noise');
+
+% (2.c).invert color
 img = imcomplement(img);
 figure,imshow(img);title('invert color'); 
 
-%% (2.c).car license plate detection
+%% (2.d).car license plate detection
 img = detectplatnumber(img);
 
 % (2.d).grayscale to binary
 threshold = graythresh(img);
 imagen = im2bw(img,threshold);
-imagen = ~imagen;
-
-% (2.e) Remove all object containing fewer than 70 pixels
-imagen = bwareaopen(imagen,70);
-imagen = ~imagen;
-figure,imshow(imagen);title('Remove all object containing fewer than 70 pixels');
 
 % (2.f) apply imrode
 SE = strel('line',2,90);
 imagen = imerode(imagen,SE);
-figure,imshow(imagen);title('apply imdilate');
+figure,imshow(imagen);title('apply imerode');
 
-%if length(size(imagen))==3 %RGB image
-%    imagen=rgb2gray(imagen);
-%    figure,imshow(imagen);title('remove noise');
-%end
+imagen = ~imagen;
 
-%(2.g) clean from noise
-imagen = medfilt2(imagen);
-[f c]=size(imagen);
-imagen (1,1)=255;
-imagen (f,1)=255;
-imagen (1,c)=255;
-imagen (f,c)=255;
-figure,imshow(imagen);title('remove noise');
-% END Filter Image Noise
+% (2.e) Remove all object containing fewer than 35 pixels
+imagen = bwareaopen(imagen,50);
+%imagen = ~imagen;
+imagen = imcomplement(imagen);
+figure,imshow(imagen);title('Remove all object containing fewer than 50 pixels');
+
+
 %%----------------> END PREPARING IMAGE
 
 word=[];%Storage matrix word from image
@@ -80,7 +77,7 @@ while 1
     [fl re]=lines(re);%Fcn 'lines' separate lines in text
     imgn=~fl;
     %*-*Uncomment line below to see lines one by one*-*-*-*
-    figure,imshow(fl);pause(1)
+    % figure,imshow(fl);pause(1)
     %*-*--*-*-*-*-*-*-
     %*-*-*-*-*-Calculating connected components*-*-*-*-*-
     L = bwlabel(imgn);
@@ -111,7 +108,7 @@ while 1
         % resize clip
         img_r=same_dim(n1);%Transf. to size 42 X 24
         %*-*Uncomment line below to see letters one by one*-*-*-*
-        figure,imshow(img_r);pause(1)
+        % figure,imshow(img_r);pause(1)
         %*-*-*-*-*-*-*-*
 		% read letter
         letter=read_letter(img_r);%img to text
