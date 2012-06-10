@@ -1,18 +1,3 @@
-% 1.input image 
-% 2.preparing 
-%   2.a convert to grayscale 
-%   2.b invert color (because i only have black on white templates)
-%   2.c detect and cropping license plat number
-%       * horizontal edge processing
-%       * vertical edge processing
-%       * segmentation
-%       * region of interest extraction
-%       * output image
-%   2.d convert to binary
-%   2.e Remove all object containing fewer than 70 pixels
-%   2.f apply imrode
-%   2.g Perform 2-D median filtering
-
 warning off
 
 % just clearing all stufft
@@ -20,7 +5,7 @@ clc;
 close all;
 clear;
 
-% (1).open file dialog
+% open file dialog
 [baseFileName, folder] = uigetfile('*.jpg','Pilih file image');
 fullImageFileName = fullfile(folder,baseFileName);
 img = imread(fullImageFileName);
@@ -28,13 +13,13 @@ figure,imshow(img);title('base image'); %fig.1
 
 %% --------------> PREPARING IMAGE
 
-%(2.a).convert to grayscale
+%.convert to grayscale
 if size(img,3)==3
 	img = rgb2gray(img); %RGB image
 end
 figure,imshow(img);title('grayscale'); %fig.2
 
-%(2.b) clean from noise
+% clean from noise
 img = medfilt2(img);
 [f c]=size(img);
 img (1,1)=255;
@@ -43,32 +28,31 @@ img (1,c)=255;
 img (f,c)=255;
 figure,imshow(img);title('remove noise');
 
-% (2.c).invert color
+% invert color
 img = imcomplement(img);
 figure,imshow(img);title('invert color'); 
 
-%% (2.d).car license plate detection
+%% START Car License Plate Detection
 img = detectplatnumber(img);
+%% END
 
-% (2.d).grayscale to binary
+% grayscale to binary
 threshold = graythresh(img);
 imagen = im2bw(img,threshold);
 
-% (2.f) apply imrode
+% apply imrode
 SE = strel('line',2,90);
 imagen = imerode(imagen,SE);
 figure,imshow(imagen);title('apply imerode');
 
 imagen = ~imagen;
 
-% (2.e) Remove all object containing fewer than 35 pixels
+% Remove all object containing fewer than 50 pixels
 imagen = bwareaopen(imagen,50);
-%imagen = ~imagen;
 imagen = imcomplement(imagen);
 figure,imshow(imagen);title('Remove all object containing fewer than 50 pixels');
 
-
-%%----------------> END PREPARING IMAGE
+%% ----------------> END PREPARING IMAGE
 
 word=[];%Storage matrix word from image
 re=imagen;
@@ -126,4 +110,3 @@ while 1
     %*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 end
 fclose(fid);
-
