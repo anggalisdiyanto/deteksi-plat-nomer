@@ -144,7 +144,7 @@ plot (vert);
 title('Histogram after Filtering'); 
 xlabel('Row Number ->'); 
 ylabel('Difference ->'); 
-figure, imshow(I); 
+%figure, imshow(I); 
 %% Find Probable candidates for Number Plate 
 j = 1; 
 for i = 2:cols-2 
