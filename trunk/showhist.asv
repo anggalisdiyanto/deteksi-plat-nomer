@@ -1,0 +1,6 @@
+function [ output_args ] = showhist( i )
+%SHOWHIST Summary of this function goes here
+%   Detailed explanation goes here
+
+
+end
