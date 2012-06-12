@@ -1,3 +1,9 @@
+buat folder baru "images" trus masukin image yang akan dites disana
+untuk menjalankan, ketik RUN_TEST di matlab.
+
+
 june
 10 - algoritma berhasil mendeteksi letak plat nomor dari image yang diambil dari internet
    - kesalahan pengenalan angka dan huruf terjadi akibat resolusi dan noise image
+   
+   

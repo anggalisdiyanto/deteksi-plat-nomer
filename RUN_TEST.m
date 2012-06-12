@@ -2,7 +2,7 @@ function Y=RUN_TEST()
 %RUN_TEST Summary of this function goes here
 %   Detailed explanation goes here
 
-somefolder = 'E:\deteksi plat nomer dengan metode sobel\Matlab\Number Plate Extraction using MATLAB\code\';
+somefolder = 'images\';
 filelist = dir(somefolder);
 % //the first two in filelist are . and ..
 for i=3:size(filelist,1)
