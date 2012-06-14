@@ -62,7 +62,7 @@ threshold = graythresh(img);
 img = im2bw(img,threshold);
 
 % apply imrode (http://www.mathworks.com/help/toolbox/images/ref/imerode.html)
-SE = strel('line',2,45);
+SE = strel('line',3,90);
 img = imerode(img,SE);
 figure,imshow(img);title('apply imerode');
  
@@ -81,7 +81,7 @@ while 1
     %*-*--*-*-*-*-*-*-
 
     % Remove all object containing fewer than 70 pixels
-    imgn = bwareaopen(imgn,70);
+    imgn = bwareaopen(imgn,100);
     figure,imshow(imgn);title('Remove all object containing fewer than 70 pixels');
     
     %*-*-*-*-*-Calculating connected components*-*-*-*-*-    
