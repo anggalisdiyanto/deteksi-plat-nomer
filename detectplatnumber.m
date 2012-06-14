@@ -20,7 +20,7 @@ for i = 2:cols
 			difference = uint32(I(j-1, i) - I(j, i)); 
 		end 
 		
-		if(difference > 20) 
+		if(difference > 25) 
 			sum = sum + difference; 
 		end 
 	end 
@@ -92,7 +92,7 @@ for i = 2:rows
         if(I(i, j) <= I(i, j-1)) 
             difference = uint32(I(i, j-1) - I(i, j)); 
         end 
-        if(difference > 20) 
+        if(difference > 25) 
             sum = sum + difference; 
         end 
     end 
