@@ -1,6 +1,6 @@
 buat folder baru "images" trus masukin image yang akan dites disana
 untuk menjalankan, ketik RUN_TEST di matlab.
-kalo mau satu2, ketik main('nama_file_image_beserta_extensi_file');
+kalo mau satu2, ketik main('full_path_image_beserta_extensi_file');
 
 
 june
